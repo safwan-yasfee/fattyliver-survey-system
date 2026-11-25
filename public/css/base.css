@@ -1,0 +1,821 @@
+/* ---------- Design tokens ---------- */
+
+:root {
+    --color-background: #f5f8fb;
+    --color-surface: #ffffff;
+    --color-primary: #0B6BCB;
+    --color-navy: #0F2A43;
+    --color-teal: #14A3A3;
+
+    --color-normal: #2E9E5B;
+    --color-moderate: #F2A100;
+    --color-high: #D64545;
+
+    --color-text: #23384D;
+    --color-muted: #607387;
+    --color-border: #E1E8EF;
+
+    --color-chart-blue: #698BAA;
+    --color-chart-teal: #75A9A5;
+
+    --radius: 8px;
+    --shadow: 0 2px 12px rgba(15, 42, 67, 0.045);
+    --sidebar-width: 260px;
+
+    --accent: var(--color-primary);
+}
+
+/* ---------- Base ---------- */
+
+* { box-sizing: border-box; }
+
+html {
+    font-size: 14pt;
+    scroll-padding-top: 100px;
+}
+
+body {
+    margin: 0;
+    background: var(--color-background);
+    color: var(--color-text);
+    font-family: "Inter", Arial, sans-serif;
+    line-height: 1.55;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:hover { text-decoration: underline; }
+
+button, input, select, textarea { font: inherit; }
+
+:focus-visible {
+    outline: 3px solid rgba(11, 107, 203, 0.45);
+    outline-offset: 3px;
+}
+
+.skip-link {
+    position: fixed;
+    top: -100px;
+    left: 16px;
+    padding: 10px 16px;
+    background: white;
+    z-index: 2000;
+}
+
+.skip-link:focus { top: 12px; }
+
+.btn {
+    --bs-btn-border-radius: 6px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    padding: 0.6rem 0.9rem;
+    white-space: nowrap;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--color-primary);
+    --bs-btn-border-color: var(--color-primary);
+    --bs-btn-hover-bg: #095AA9;
+    --bs-btn-hover-border-color: #095AA9;
+    --bs-btn-active-bg: #084F95;
+    --bs-btn-active-border-color: #084F95;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--color-primary);
+    --bs-btn-border-color: #B8D1E9;
+    --bs-btn-hover-bg: var(--color-primary);
+    --bs-btn-hover-border-color: var(--color-primary);
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: #4B6074;
+    --bs-btn-border-color: #CCD7E1;
+    --bs-btn-hover-bg: #EDF2F6;
+    --bs-btn-hover-color: var(--color-navy);
+    --bs-btn-hover-border-color: #BCCAD6;
+}
+
+.form-control,
+.form-select {
+    min-height: 44px;
+    border-color: #CED9E3;
+    border-radius: 6px;
+    font-size: 0.88rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(11, 107, 203, 0.09);
+}
+
+.form-label {
+    margin-bottom: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.text-secondary { color: var(--color-muted) !important; }
+
+/* ---------- Sidebar ---------- */
+
+.ehr-sidebar {
+    width: var(--sidebar-width);
+    --bs-offcanvas-width: var(--sidebar-width);
+    background: var(--color-navy) !important;
+    color: white;
+}
+
+.ehr-sidebar .offcanvas-body {
+    display: flex !important;
+    flex-direction: column;
+    padding: 1.25rem;
+}
+
+.ehr-sidebar .offcanvas-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    margin: 0.25rem 0 2rem;
+}
+
+.sidebar-brand:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.brand-symbol {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 8px;
+    font-size: 1.3rem;
+}
+
+.sidebar-brand strong {
+    display: block;
+    font-size: 1rem;
+    letter-spacing: -0.02em;
+}
+
+.sidebar-brand small {
+    display: block;
+    font-size: 0.58rem;
+    color: #B7C8D7;
+}
+
+.sidebar-caption {
+    margin: 1.2rem 0 0.55rem;
+    color: #A6BBCD;
+    font-size: 0.61rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 46px;
+    margin-bottom: 6px;
+    padding: 0.7rem;
+    color: #D8E3ED;
+    border-radius: 6px;
+    font-size: 0.82rem;
+}
+
+.sidebar-link .bi {
+    width: 21px;
+    font-size: 1rem;
+}
+
+.sidebar-link:hover,
+.sidebar-link:focus-visible {
+    background: rgba(255, 255, 255, 0.07);
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar-link.active {
+    background: rgba(11, 107, 203, 0.24);
+    color: white;
+    box-shadow: inset 3px 0 0 #6CB2F5;
+}
+
+.sidebar-bottom {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 2rem;
+    color: #AFC2D2;
+}
+
+.sidebar-bottom strong,
+.sidebar-bottom small { display: block; }
+
+.sidebar-bottom strong {
+    font-size: 0.68rem;
+    font-weight: 500;
+}
+
+.sidebar-bottom small {
+    margin-top: 3px;
+    font-size: 0.58rem;
+}
+
+/* ---------- Main shell and navigation ---------- */
+
+.ehr-shell {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.ehr-topbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    min-height: 82px;
+    padding: 14px 28px;
+    background: white;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.global-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 220px;
+    max-width: 480px;
+    flex: 1;
+    padding: 0 12px;
+    background: #F5F8FB;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+}
+
+.global-search .bi {
+    color: #718497;
+    font-size: 0.9rem;
+}
+
+.global-search input {
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-size: 0.78rem;
+}
+
+.global-search:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(11, 107, 203, 0.08);
+}
+
+.search-submit {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--color-primary);
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.topbar-tools {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-left: auto;
+}
+
+.date-stamp {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+}
+
+.icon-button {
+    display: inline-grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+}
+
+.notification-button { position: relative; }
+
+.notification-dot {
+    position: absolute;
+    top: 8px;
+    right: 9px;
+    width: 7px;
+    height: 7px;
+    border: 2px solid white;
+    border-radius: 50%;
+    background: var(--color-high);
+}
+
+.doctor-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: left;
+}
+
+.doctor-avatar {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #EDF3F8;
+    color: var(--color-primary);
+    border: 1px solid #DCE6EF;
+}
+
+.doctor-summary strong,
+.doctor-summary small { display: block; }
+
+.doctor-summary strong {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.76rem;
+}
+
+.doctor-summary small {
+    font-size: 0.64rem;
+    color: var(--color-muted);
+}
+
+.dropdown-menu {
+    border-color: var(--color-border);
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    font-size: 0.8rem;
+}
+
+.dropdown-item {
+    padding-top: 0.55rem;
+    padding-bottom: 0.55rem;
+    white-space: normal;
+}
+
+.notification-menu { width: 300px; }
+
+.ehr-main {
+    flex: 1;
+    padding: 24px 28px 32px;
+    min-width: 0;
+}
+
+.page-breadcrumb {
+    margin-bottom: 16px;
+    font-size: 0.72rem;
+}
+
+.preview-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.68rem;
+    color: var(--color-muted);
+}
+
+.page-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.eyebrow {
+    margin-bottom: 6px;
+    color: var(--accent);
+    font-size: 0.67rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.page-heading h1 {
+    margin: 0;
+    color: var(--color-navy);
+    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+
+.page-description {
+    margin: 8px 0 0;
+    color: var(--color-muted);
+    font-size: 0.82rem;
+}
+
+/* ---------- Cards ---------- */
+
+.ehr-card,
+.stat-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    box-shadow: var(--shadow);
+}
+
+.ehr-card { overflow: visible; }
+
+.card-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 20px 22px;
+}
+
+.card-heading h2 {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: var(--color-navy);
+}
+
+.card-heading p {
+    margin: 5px 0 0;
+    font-size: 0.73rem;
+    color: var(--color-muted);
+}
+
+.section-icon {
+    color: #8296A8;
+    font-size: 1.2rem;
+}
+
+.stat-card {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    height: 100%;
+    min-height: 152px;
+    padding: 20px;
+    border-left: 3px solid var(--stat-color, var(--color-primary));
+}
+
+.stat-label {
+    margin: 0 0 12px;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.stat-value {
+    margin: 0;
+    color: var(--color-navy);
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.04em;
+}
+
+.stat-hint {
+    margin: 9px 0 0;
+    font-size: 0.63rem;
+    color: var(--color-muted);
+}
+
+.stat-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    color: var(--stat-color, var(--accent));
+    font-size: 1.15rem;
+}
+
+.tone-primary { --stat-color: var(--color-primary); }
+.tone-teal { --stat-color: var(--color-teal); }
+.tone-danger { --stat-color: var(--color-high); }
+.tone-amber { --stat-color: var(--color-moderate); }
+
+/* ---------- Tables and status ---------- */
+
+.ehr-table {
+    width: 100%;
+    margin: 0;
+    font-size: 0.8rem;
+    --bs-table-color: var(--color-text);
+    --bs-table-border-color: #E9EEF3;
+}
+
+.ehr-table th {
+    padding: 13px 18px;
+    background: #F8FAFC;
+    color: #5B7084;
+    font-size: 0.69rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border-top: 1px solid var(--color-border);
+}
+
+.ehr-table td {
+    padding: 16px 18px;
+    vertical-align: middle;
+}
+
+.ehr-table tbody tr:hover td {
+    background: #FAFCFE;
+}
+
+.record-code {
+    font-weight: 600;
+    color: var(--color-primary) !important;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.risk-badge,
+.result-badge,
+.grade-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 9px;
+    border-radius: 5px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.risk-normal {
+    color: #21683E;
+    background: #EDF7F0;
+    border: 1px solid #D4EBDD;
+    --status-color: var(--color-normal);
+}
+
+.risk-moderate {
+    color: #815600;
+    background: #FFF8E9;
+    border: 1px solid #F3E4BC;
+    --status-color: var(--color-moderate);
+}
+
+.risk-high {
+    color: #9C3030;
+    background: #FDF0F0;
+    border: 1px solid #F0D6D6;
+    --status-color: var(--color-high);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--status-color);
+}
+
+.grade-badge {
+    color: #4F667C;
+    background: #F1F5F8;
+    border: 1px solid #E1E8EF;
+}
+
+.result-normal {
+    color: #21683E;
+    background: #EDF7F0;
+}
+
+.result-abnormal {
+    color: #A33232;
+    background: #FDF0F0;
+}
+
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 15px 22px;
+    color: var(--color-muted);
+    font-size: 0.65rem;
+}
+
+.empty-state {
+    padding: 45px 20px !important;
+    text-align: center;
+    color: var(--color-muted);
+}
+
+.empty-state > .bi {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+}
+
+.empty-state p { margin-bottom: 8px; }
+
+.subtle-label {
+    color: var(--color-muted);
+    font-size: 0.7rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 280px;
+    padding: 0 20px 20px;
+}
+
+.ehr-footer {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 18px 28px;
+    border-top: 1px solid var(--color-border);
+    font-size: 0.63rem;
+    color: var(--color-muted);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (min-width: 992px) {
+    .ehr-sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        height: 100vh;
+        z-index: 1030;
+    }
+
+    .ehr-sidebar .offcanvas-body { height: 100%; }
+
+    .ehr-shell { margin-left: var(--sidebar-width); }
+}
+
+@media (max-width: 1199.98px) {
+    .date-stamp { display: none; }
+}
+
+@media (max-width: 767.98px) {
+    .ehr-topbar { padding: 12px 16px; gap: 10px; }
+    .ehr-main { padding: 20px 16px; }
+    .ehr-footer { padding: 16px; }
+
+    .global-search {
+        order: 3;
+        flex-basis: 100%;
+        max-width: none;
+    }
+
+    .doctor-summary { display: none; }
+    .topbar-tools { gap: 10px; }
+    .stat-card { padding: 16px; min-height: 140px; }
+    .card-heading { padding: 18px; }
+    .page-heading h1 { font-size: 1.45rem; }
+}
+
+/* ---------- Print patient record ---------- */
+
+@media print {
+    body { background: white; }
+    .ehr-sidebar,
+    .ehr-topbar,
+    .page-breadcrumb,
+    .preview-label,
+    .no-print,
+    .page-heading .btn { display: none !important; }
+
+    .ehr-shell { margin: 0; }
+    .ehr-main { padding: 0; }
+    .ehr-card, .stat-card { box-shadow: none; }
+    .table-responsive { overflow: visible; }
+    tr { break-inside: avoid; }
+    thead { display: table-header-group; }
+    .ehr-footer { padding: 12px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+
+/* Apply the shared theme to existing Bootstrap-based application pages. */
+
+.live-interface .card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.live-interface .table {
+    color: var(--color-text);
+    --bs-table-color: var(--color-text);
+    --bs-table-border-color: var(--color-border);
+}
+
+.live-interface .table > thead > tr > th {
+    background: #F8FAFC;
+    color: #5B7084;
+    font-weight: 600;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.live-interface .table > :not(caption) > * > * {
+    padding: 13px 16px;
+}
+
+.live-interface h1,
+.live-interface h2,
+.live-interface h3 {
+    color: var(--color-navy);
+}
+
+.live-interface .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+/* Support older views using the original custom button classes. */
+
+.live-interface .button {
+    display: inline-block;
+    padding: 9px 16px;
+    border: 1px solid var(--color-primary);
+    border-radius: 6px;
+    background: var(--color-primary);
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.live-interface .button-secondary {
+    background: white;
+    color: var(--color-primary);
+}
+
+.live-interface .muted {
+    color: var(--color-muted);
+}
+
+.live-interface .table-wrap {
+    overflow-x: auto;
+}
+
+.live-interface .success {
+    padding: 12px 16px;
+    border: 1px solid #D4EBDD;
+    border-radius: var(--radius);
+    background: #EDF7F0;
+    color: #21683E;
+}
+
+.live-interface .error {
+    padding: 12px 16px;
+    border: 1px solid #F0D6D6;
+    border-radius: var(--radius);
+    background: #FDF0F0;
+    color: #9C3030;
+}

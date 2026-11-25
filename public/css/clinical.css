@@ -1,0 +1,221 @@
+.workspace-clinical {
+    --accent: var(--color-primary);
+}
+
+.patient-name {
+    color: var(--color-navy);
+    font-weight: 600;
+}
+
+.patient-name:hover {
+    color: var(--color-primary);
+}
+
+.directory-filter {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.directory-filter .form-select {
+    width: auto;
+    min-width: 195px;
+}
+
+.patient-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 22px;
+}
+
+.summary-item {
+    padding: 0 22px;
+    border-right: 1px solid var(--color-border);
+}
+
+.summary-item:first-child { padding-left: 0; }
+.summary-item:last-child { border-right: 0; }
+
+.summary-label {
+    display: block;
+    margin-bottom: 9px;
+    color: var(--color-muted);
+    font-size: 0.72rem;
+}
+
+.summary-item strong {
+    display: block;
+    font-size: 1.15rem;
+    color: var(--color-navy);
+    font-weight: 600;
+}
+
+.summary-item strong small {
+    font-size: 0.65rem;
+    color: var(--color-muted);
+    font-weight: 400;
+}
+
+.clinical-alert-strip {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 16px 20px;
+    border: 1px solid #DCE6EF;
+    border-left: 3px solid var(--color-primary);
+    border-radius: var(--radius);
+    background: #F0F5FA;
+}
+
+.clinical-alert-strip > .bi {
+    color: var(--color-primary);
+    font-size: 1.25rem;
+}
+
+.clinical-alert-strip > div { flex: 1; }
+
+.clinical-alert-strip strong {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.clinical-alert-strip div > span {
+    display: block;
+    color: var(--color-muted);
+    font-size: 0.72rem;
+    margin-top: 3px;
+}
+
+.laboratory-table .abnormal-result {
+    color: var(--color-high);
+    font-weight: 600;
+}
+
+.laboratory-table .normal-result {
+    font-weight: 500;
+}
+
+.laboratory-table td small {
+    font-size: 0.67rem;
+    font-weight: 400;
+}
+
+.fib4-card { padding: 22px; }
+
+.fib4-card h2 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.fib4-value {
+    margin: 10px 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-navy);
+    line-height: 1.15;
+    letter-spacing: -0.06em;
+}
+
+.risk-scale {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+}
+
+.risk-scale-segment {
+    position: relative;
+    padding: 12px 6px 8px;
+    border-top: 5px solid;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.66rem;
+    color: var(--color-muted);
+    background: #F8FAFC;
+}
+
+.scale-normal { border-color: var(--color-normal); }
+.scale-moderate { border-color: var(--color-moderate); }
+.scale-high { border-color: var(--color-high); }
+
+.risk-scale-segment.selected {
+    color: var(--color-navy);
+    font-weight: 700;
+    background: #EEF3F7;
+}
+
+.risk-scale-segment .bi {
+    position: absolute;
+    top: -21px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--color-navy);
+}
+
+.attendance-list {
+    list-style: none;
+    margin: 0;
+    padding: 0 22px 22px 40px;
+}
+
+.attendance-list li {
+    position: relative;
+    padding: 0 0 22px 18px;
+    border-left: 1px solid #D6E2ED;
+}
+
+.attendance-list li:last-child {
+    padding-bottom: 0;
+    border-left-color: transparent;
+}
+
+.attendance-marker {
+    position: absolute;
+    top: 5px;
+    left: -5px;
+    width: 9px;
+    height: 9px;
+    border: 2px solid var(--color-primary);
+    border-radius: 50%;
+    background: white;
+}
+
+.attendance-list strong { font-size: 0.76rem; }
+
+.attendance-list time {
+    color: var(--color-muted);
+    font-size: 0.66rem;
+}
+
+.attendance-list p {
+    margin: 6px 0 0;
+    color: var(--color-muted);
+    font-size: 0.7rem;
+}
+
+@media (max-width: 767.98px) {
+    .patient-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px 0;
+        padding: 18px;
+    }
+
+    .summary-item { padding: 0 14px; }
+    .summary-item:nth-child(odd) { padding-left: 0; }
+    .summary-item:nth-child(even) { border-right: 0; }
+
+    .directory-filter {
+        width: 100%;
+    }
+
+    .directory-filter .form-select {
+        flex: 1;
+        min-width: 130px;
+    }
+
+    .clinical-alert-strip {
+        align-items: flex-start;
+    }
+}

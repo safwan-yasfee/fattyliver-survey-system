@@ -3,18 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use App\Services\VisitCalculations;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class PatientController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $patients = Patient::orderByDesc('patient_id')->paginate(15);
+        $filters = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+            'sex' => ['nullable', 'in:Male,Female,Other'],
+        ]);
 
-        return view('patients.index', compact('patients'));
+        $search = trim($filters['search'] ?? '');
+        $sex = $filters['sex'] ?? '';
+
+        $patients = Patient::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('study_code', 'like', '%' . $search . '%')
+                        ->orWhere('full_name', 'like', '%' . $search . '%')
+                        ->orWhere('phone', 'like', '%' . $search . '%');
+                });
+            })
+            ->when($sex !== '', function ($query) use ($sex) {
+                $query->where('sex', $sex);
+            })
+            ->orderByDesc('patient_id')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('patients.index', compact(
+            'patients',
+            'search',
+            'sex'
+        ));
     }
 
     public function create(): View
@@ -25,20 +52,71 @@ class PatientController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'study_code' => [
+
+            'occupation' => [
+                'nullable',
+                'string',
+                'max:150',
+            ],
+            'education_level' => [
+                'nullable',
+                'string',
+                'max:100',
+            ],
+            'address' => [
+                'nullable',
+                'string',
+                'max:2000',
+            ],
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+            ],
+
+
+
+            'full_name' => [
                 'required',
                 'string',
-                'max:30',
-                'unique:patients,study_code',
+                'max:255',
             ],
-            'full_name' => ['required', 'string', 'max:255'],
-            'date_of_birth' => ['nullable', 'date', 'before_or_equal:today'],
-            'sex' => ['nullable', 'in:Male,Female,Other'],
-            'phone' => ['nullable', 'string', 'max:30'],
-        ], [], [
-            'study_code' => 'code',
+            'date_of_birth' => [
+                'nullable',
+                'date',
+                'before_or_equal:today',
+            ],
+            'sex' => [
+                'nullable',
+                'in:Male,Female,Other',
+            ],
+            'phone' => [
+                'bail',
+                'nullable',
+                'string',
+                'max:14',
+                'regex:/\A(?:01[3-9][0-9]{8}|\+8801[3-9][0-9]{8})\z/',
+            ],
+        ], [
+            'phone.regex' =>
+                'Enter a Bangladesh mobile number such as 01712345678 or +8801712345678, without spaces or hyphens.',
+            'phone.max' =>
+                'The mobile number must contain 11 local digits or use the +880 international format.',
+        ], [
             'full_name' => 'full name',
+            'phone' => 'mobile number',
         ]);
+
+        // Store local numbers in international format.
+        if (
+            isset($data['phone']) &&
+            str_starts_with($data['phone'], '01')
+        ) {
+            $data['phone'] = '+88' . $data['phone'];
+        }
+
+        // Generate the patient code on the server.
+        $data['study_code'] = 'FL-' . (string) Str::ulid();
 
         Patient::create($data);
 
@@ -47,13 +125,41 @@ class PatientController extends Controller
             ->with('success', 'Patient registered successfully.');
     }
 
+    public function archived(): View
+    {
+        Gate::authorize('archive-patients');
+
+        $patients = Patient::onlyTrashed()
+            ->orderByDesc('deleted_at')
+            ->paginate(15);
+
+        return view('patients.archived', compact('patients'));
+    }
+
+    public function restore(int $patient): RedirectResponse
+    {
+        Gate::authorize('archive-patients');
+
+        $archivedPatient = Patient::onlyTrashed()
+            ->findOrFail($patient);
+
+        $archivedPatient->restore();
+
+        return redirect()
+            ->route('patients.archived')
+            ->with('success', 'Patient restored successfully.');
+    }
+
     public function show(Patient $patient): View
     {
         $visits = $patient->visits()
             ->get()
             ->keyBy('time_point');
 
-        return view('patients.show', compact('patient', 'visits'));
+        return view('patients.show', compact(
+            'patient',
+            'visits'
+        ));
     }
 
     public function edit(Patient $patient): View
@@ -66,22 +172,45 @@ class PatientController extends Controller
         Patient $patient
     ): RedirectResponse {
         $data = $request->validate([
-            'study_code' => [
+            'full_name' => [
                 'required',
                 'string',
-                'max:30',
-                Rule::unique('patients', 'study_code')
-                    ->ignore($patient->patient_id, 'patient_id'),
+                'max:255',
             ],
-            'full_name' => ['required', 'string', 'max:255'],
-            'date_of_birth' => ['nullable', 'date', 'before_or_equal:today'],
-            'sex' => ['nullable', 'in:Male,Female,Other'],
-            'phone' => ['nullable', 'string', 'max:30'],
-        ], [], [
-            'study_code' => 'code',
+            'date_of_birth' => [
+                'nullable',
+                'date',
+                'before_or_equal:today',
+            ],
+            'sex' => [
+                'nullable',
+                'in:Male,Female,Other',
+            ],
+            'phone' => [
+                'bail',
+                'nullable',
+                'string',
+                'max:14',
+                'regex:/\A(?:01[3-9][0-9]{8}|\+8801[3-9][0-9]{8})\z/',
+            ],
+        ], [
+            'phone.regex' =>
+                'Enter a Bangladesh mobile number such as 01712345678 or +8801712345678, without spaces or hyphens.',
+            'phone.max' =>
+                'The mobile number must contain 11 local digits or use the +880 international format.',
+        ], [
             'full_name' => 'full name',
+            'phone' => 'mobile number',
         ]);
 
+        if (
+            isset($data['phone']) &&
+            str_starts_with($data['phone'], '01')
+        ) {
+            $data['phone'] = '+88' . $data['phone'];
+        }
+
+        // Study code is excluded from editable data.
         $patient->update($data);
 
         return redirect()
@@ -98,7 +227,10 @@ class PatientController extends Controller
                 'required',
                 'in:baseline,month_3,month_6,month_12',
             ],
-            'due_date' => ['required', 'date_format:Y-m-d'],
+            'due_date' => [
+                'required',
+                'date_format:Y-m-d',
+            ],
         ]);
 
         $visit = $patient->visits()->firstOrCreate(
@@ -106,10 +238,11 @@ class PatientController extends Controller
             ['due_date' => $data['due_date']]
         );
 
-        if (! $visit->wasRecentlyCreated) {
+        if (!$visit->wasRecentlyCreated) {
             return back()
                 ->withErrors([
-                    'time_point' => 'This patient already has a visit for that time point.',
+                    'time_point' =>
+                        'This patient already has a visit for that time point.',
                 ])
                 ->withInput();
         }
@@ -127,10 +260,16 @@ class PatientController extends Controller
             ->with('vitals')
             ->findOrFail($visit);
 
+        $calculations = VisitCalculations::forVisit(
+            $patient,
+            $studyVisit
+        );
+
         return view('patients.vitals', [
             'patient' => $patient,
             'studyVisit' => $studyVisit,
             'vitals' => $studyVisit->vitals,
+            'calculations' => $calculations,
         ]);
     }
 
@@ -214,8 +353,19 @@ class PatientController extends Controller
             ->with(
                 'success',
                 $updated
-                    ? 'Visit marked as completed.'
-                    : 'This visit is already completed.'
+                ? 'Visit marked as completed.'
+                : 'This visit is already completed.'
             );
+    }
+
+    public function destroy(Patient $patient): RedirectResponse
+    {
+        Gate::authorize('archive-patients');
+
+        $patient->delete();
+
+        return redirect()
+            ->route('patients.index')
+            ->with('success', 'Patient archived successfully.');
     }
 }

@@ -1,29 +1,35 @@
 @extends('layouts.patients')
 
 @section('content')
-    <nav class="d-flex flex-wrap gap-2 mb-4"
-         aria-label="Dashboard navigation">
-        <a
-            href="{{ route('dashboard') }}"
-            class="btn {{ request()->routeIs('dashboard') ? 'btn-primary' : 'btn-outline-secondary' }}"
-        >
-            Clinical Dashboard
-        </a>
+    <header class="page-heading">
+        <div>
+            <p class="eyebrow">
+                {{ request()->routeIs('dashboard.research*')
+                    ? 'Research workspace'
+                    : 'Clinical workspace' }}
+            </p>
 
-        <a
-            href="{{ route('dashboard.research') }}"
-            class="btn {{ request()->routeIs('dashboard.research') ? 'btn-primary' : 'btn-outline-secondary' }}"
-        >
-            Research Dashboard
-        </a>
-    </nav>
+            <h1>@yield('dashboard-title', 'Dashboard')</h1>
 
-    <header class="mb-4">
-        <h1 class="h2 fw-bold">@yield('dashboard-title')</h1>
+            <p class="page-description">
+                Welcome, {{ auth()->user()->name }}.
+            </p>
+        </div>
 
-        <p class="text-secondary mb-0">
-            Welcome, {{ auth()->user()->name }}.
-        </p>
+        <nav class="d-flex flex-wrap gap-2"
+             aria-label="Dashboard navigation">
+            <a href="{{ route('dashboard') }}"
+               class="btn {{ request()->routeIs('dashboard') ? 'btn-primary' : 'btn-outline-secondary' }}"
+               @if(request()->routeIs('dashboard')) aria-current="page" @endif>
+                Clinical Dashboard
+            </a>
+
+            <a href="{{ route('dashboard.research') }}"
+               class="btn {{ request()->routeIs('dashboard.research*') ? 'btn-research' : 'btn-outline-secondary' }}"
+               @if(request()->routeIs('dashboard.research*')) aria-current="page" @endif>
+                Research Dashboard
+            </a>
+        </nav>
     </header>
 
     @yield('dashboard-content')

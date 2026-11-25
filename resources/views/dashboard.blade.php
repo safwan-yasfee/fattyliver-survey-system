@@ -62,6 +62,15 @@
 @endcan
 
 
+@if($user->role && $user->role->name === 'Admin')
+    <a href="{{ route('admin.users.index') }}"
+       class="btn btn-success">
+        User Management
+    </a>
+@endif
+
+
+
     <form method="POST" action="{{ route('logout') }}">
         @csrf
         <button type="submit">Logout</button>

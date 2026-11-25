@@ -22,7 +22,7 @@
     @endphp
 
     <header class="d-flex justify-content-between align-items-center
-                   flex-wrap gap-3 mb-4">
+                       flex-wrap gap-3 mb-4">
         <div>
             <h1 class="h2 mb-1">Visit Vitals</h1>
 
@@ -32,18 +32,18 @@
             </p>
         </div>
 
-        <a href="{{ route('patients.show', $patient) }}"
-           class="btn btn-outline-secondary">
+        <a href="{{ route('patients.show', $patient) }}" class="btn btn-outline-secondary">
             Patient Profile
         </a>
     </header>
 
+    @include('patients.partials.calculations', [
+        'calculations' => $calculations,
+    ])
+
     <section class="card border-0 shadow-sm rounded-4 mb-4">
         <div class="card-body p-4">
-            <form
-                method="POST"
-                action="{{ route('patients.visits.vitals.update', [$patient, $studyVisit]) }}"
-            >
+            <form method="POST" action="{{ route('patients.visits.vitals.update', [$patient, $studyVisit]) }}">
                 @csrf
                 @method('PUT')
 
@@ -54,14 +54,8 @@
                                 {{ $settings['label'] }}
                             </label>
 
-                            <input
-                                id="{{ $field }}"
-                                name="{{ $field }}"
-                                type="number"
-                                step="{{ $settings['step'] }}"
-                                class="form-control"
-                                value="{{ old($field, $vitals?->{$field}) }}"
-                            >
+                            <input id="{{ $field }}" name="{{ $field }}" type="number" step="{{ $settings['step'] }}"
+                                class="form-control" value="{{ old($field, $vitals?->{$field}) }}">
                         </div>
                     @endforeach
                 </div>
@@ -87,10 +81,7 @@
                     Save the measurements before marking this visit complete.
                 </p>
 
-                <form
-                    method="POST"
-                    action="{{ route('patients.visits.complete', [$patient, $studyVisit]) }}"
-                >
+                <form method="POST" action="{{ route('patients.visits.complete', [$patient, $studyVisit]) }}">
                     @csrf
                     @method('PATCH')
 

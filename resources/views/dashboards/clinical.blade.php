@@ -14,7 +14,12 @@
             Add Patient
         </a>
 
-        
+        @can('manage-users')
+            <a href="{{ route('admin.users.index') }}"
+               class="btn btn-outline-primary">
+                User Management
+            </a>
+        @endcan
     </div>
 
     <div class="row g-3 mb-4">
@@ -43,11 +48,11 @@
                     <table class="table align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>Patient</th>
-                                <th>Code</th>
-                                <th>Time Point</th>
-                                <th>Due Date</th>
-                                <th></th>
+                                <th scope="col">Patient</th>
+                                <th scope="col">Code</th>
+                                <th scope="col">Time Point</th>
+                                <th scope="col">Due Date</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
 
@@ -57,12 +62,12 @@
                                     <td>{{ $visit->patient->full_name }}</td>
                                     <td>{{ $visit->patient->study_code }}</td>
                                     <td>{{ $visit->time_point }}</td>
-                                    <td>{{ $visit->due_date->format('d M Y') }}</td>
                                     <td>
-                                        <a
-                                            href="{{ route('patients.visits.vitals.edit', [$visit->patient, $visit]) }}"
-                                            class="btn btn-outline-primary btn-sm"
-                                        >
+                                        {{ $visit->due_date->format('d M Y') }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('patients.visits.vitals.edit', [$visit->patient, $visit]) }}"
+                                           class="btn btn-outline-primary btn-sm">
                                             Open Visit
                                         </a>
                                     </td>
@@ -85,8 +90,8 @@
                         <table class="table mb-0">
                             <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Full Name</th>
+                                    <th scope="col">Code</th>
+                                    <th scope="col">Full Name</th>
                                 </tr>
                             </thead>
 
@@ -102,7 +107,9 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="2">No patients registered.</td>
+                                        <td colspan="2">
+                                            No patients registered.
+                                        </td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -117,6 +124,7 @@
                 <div class="card-body p-4">
                     <h2 class="h5 mb-3">
                         Open Clinical Alerts
+
                         @if ($alertsAvailable)
                             <span class="badge text-bg-danger">
                                 {{ $openAlertCount }}
@@ -134,6 +142,7 @@
                                 <p class="fw-semibold mb-1">
                                     {{ $alert->alert_type }}
                                 </p>
+
                                 <p class="mb-0">{{ $alert->message }}</p>
                             </div>
                         @empty

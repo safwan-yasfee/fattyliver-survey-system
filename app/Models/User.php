@@ -46,9 +46,10 @@ class User extends Authenticatable
      * Check whether the user account is active.
      */
     public function isActive(): bool
-    {
-        return (bool) $this->is_active;
-    }
+{
+    return (bool) $this->is_active
+        && $this->status === 'active';
+}
 
     /**
      * Get the attributes that should be cast.

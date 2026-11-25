@@ -5,15 +5,26 @@
 
 @section('dashboard-content')
     <div class="d-flex justify-content-between align-items-center
-                flex-wrap gap-3 mb-4">
+                        flex-wrap gap-3 mb-4">
         <p class="text-secondary mb-0">
             {{ $patientCount }} registered patients
         </p>
 
-        <a href="{{ route('dashboard.research.export') }}"
-           class="btn btn-primary">
+        <a href="{{ route('dashboard.research.export') }}" class="btn btn-primary">
             Export Visit Summary CSV
         </a>
+
+
+        <a href="{{ route('dashboard.research.patients') }}" class="btn btn-outline-primary">
+            Research Patient List
+        </a>
+
+
+        @can('manage-users')
+            <a href="{{ route('admin.consent-versions.index') }}" class="btn btn-outline-primary">
+                Consent Versions
+            </a>
+        @endcan
     </div>
 
     @if ($eligibility === null)
@@ -42,10 +53,10 @@
 
     <div class="row g-3 mb-4">
         @foreach ([
-            'Consented Patients' => $consentedCount,
-            'All Four Visits Completed' => $allVisitsCompleted,
-            'Recorded Serious Adverse Events' => $seriousEventCount,
-        ] as $label => $count)
+                'Consented Patients' => $consentedCount,
+                'All Four Visits Completed' => $allVisitsCompleted,
+                'Recorded Serious Adverse Events' => $seriousEventCount,
+            ] as $label => $count)
             <div class="col-md-4">
                 <section class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body p-4">
@@ -93,18 +104,9 @@
                                 <td>{{ $row['overdue'] }}</td>
 
                                 <td style="min-width: 180px">
-                                    <div
-                                        class="progress"
-                                        role="progressbar"
-                                        aria-label="{{ $row['label'] }} completion"
-                                        aria-valuenow="{{ $row['percentage'] }}"
-                                        aria-valuemin="0"
-                                        aria-valuemax="100"
-                                    >
-                                        <div
-                                            class="progress-bar bg-success"
-                                            style="width: {{ $row['percentage'] }}%"
-                                        ></div>
+                                    <div class="progress" role="progressbar" aria-label="{{ $row['label'] }} completion"
+                                        aria-valuenow="{{ $row['percentage'] }}" aria-valuemin="0" aria-valuemax="100">
+                                        <div class="progress-bar bg-success" style="width: {{ $row['percentage'] }}%"></div>
                                     </div>
 
                                     <small>{{ $row['percentage'] }}%</small>

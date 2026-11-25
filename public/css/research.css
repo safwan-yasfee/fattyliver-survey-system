@@ -1,0 +1,119 @@
+.workspace-research {
+    --accent: var(--color-teal);
+}
+
+.workspace-research .eyebrow {
+    color: #087C7C;
+}
+
+.workspace-research .sidebar-link.active {
+    background: rgba(20, 163, 163, 0.16);
+    box-shadow: inset 3px 0 0 var(--color-teal);
+}
+
+.btn-research {
+    --bs-btn-color: #FFFFFF;
+    --bs-btn-bg: #087C7C;
+    --bs-btn-border-color: #087C7C;
+    --bs-btn-hover-color: #FFFFFF;
+    --bs-btn-hover-bg: #066969;
+    --bs-btn-hover-border-color: #066969;
+    --bs-btn-active-color: #FFFFFF;
+    --bs-btn-active-bg: #055D5D;
+    --bs-btn-active-border-color: #055D5D;
+}
+
+.workspace-research .form-control:focus,
+.workspace-research .form-select:focus {
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 3px rgba(20, 163, 163, 0.1);
+}
+
+.workspace-research .record-code {
+    color: #087C7C !important;
+}
+
+.cohort-panel {
+    border-top: 3px solid var(--color-teal);
+}
+
+.cohort-controls {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1.2fr 1fr auto;
+    align-items: end;
+    gap: 18px;
+    padding: 0 22px 22px;
+}
+
+.cohort-controls fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.cohort-controls legend {
+    float: none;
+    width: auto;
+    margin: 0 0 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.cohort-controls .form-label {
+    display: block;
+}
+
+.range-inputs {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.range-inputs input {
+    width: 100%;
+    min-width: 0;
+    padding-left: 10px;
+    padding-right: 6px;
+}
+
+.range-inputs > span {
+    color: #8296A8;
+}
+
+.cohort-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.chart-compact { height: 275px; }
+.chart-wide { height: 280px; }
+
+.workspace-research .stat-value {
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1399.98px) {
+    .cohort-controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .cohort-buttons {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .cohort-controls {
+        grid-template-columns: 1fr;
+        padding: 0 18px 18px;
+    }
+
+    .cohort-buttons {
+        grid-column: auto;
+    }
+
+    .cohort-buttons .btn {
+        flex: 1;
+    }
+}

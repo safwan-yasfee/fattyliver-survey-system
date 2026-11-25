@@ -89,11 +89,10 @@ class DashboardController extends Controller
 
             $openAlertCount = (clone $alertQuery)->count();
 
-            
-                $alerts = (clone $alertQuery)
-    ->orderByDesc('created_at')
-    ->limit(5)
-    ->get();
+            $alerts = (clone $alertQuery)
+                ->orderByDesc('created_at')
+                ->limit(5)
+                ->get();
         }
 
         return view('dashboards.clinical', compact(
@@ -109,23 +108,27 @@ class DashboardController extends Controller
     public function research(): View
     {
         $patientCount = $this->patients()->count();
-        $patientIds = $this->patients()->select('patient_id');
+
+        $patientIds = $this->patients()
+            ->select('patient_id');
 
         $eligibility = null;
         $unreviewedCount = null;
 
+        // Count only the latest eligibility review for each patient.
         if (Schema::hasColumns('eligibility_reviews', [
-    'eligibility_review_id',
-    'patient_id',
-    'status',
-])) {
+            'id',
+            'patient_id',
+            'status',
+        ])) {
             $latestReviewIds = DB::table('eligibility_reviews')
-                ->selectRaw('MAX(eligibility_review_id)')
+                ->whereNotNull('patient_id')
+                ->selectRaw('MAX(id)')
                 ->groupBy('patient_id');
 
             $counts = DB::table('eligibility_reviews')
                 ->whereIn('patient_id', clone $patientIds)
-                ->whereIn('eligibility_review_id', $latestReviewIds)
+                ->whereIn('id', $latestReviewIds)
                 ->select('status')
                 ->selectRaw('COUNT(*) AS total')
                 ->groupBy('status')
@@ -137,28 +140,19 @@ class DashboardController extends Controller
                 'Not Eligible' => (int) ($counts['not_eligible'] ?? 0),
             ];
 
-            $unreviewedCount = $patientCount - $counts->sum();
+            $reviewedPatientCount = (int) $counts->sum();
+
+            $unreviewedCount = $patientCount - $reviewedPatientCount;
         }
 
-        $consentedCount = null;
-
-        if (Schema::hasColumns('consents', [
-    'consent_id',
-    'patient_id',
-    'signed_at',
-    'withdrawn_at',
-])) {
-            $latestConsentIds = DB::table('consents')
-                ->selectRaw('MAX(consent_id)')
-                ->groupBy('patient_id');
-
-            $consentedCount = DB::table('consents')
-                ->whereIn('patient_id', clone $patientIds)
-                ->whereIn('consent_id', $latestConsentIds)
-                ->whereNotNull('signed_at')
-                ->whereNull('withdrawn_at')
-                ->count();
-        }
+        // Count patients whose latest consent is signed
+        // and has not been withdrawn.
+        $consentedCount = $this->patients()
+            ->whereHas('latestConsent', function (Builder $query) {
+                $query->whereNotNull('signed_at')
+                    ->whereNull('withdrawn_at');
+            })
+            ->count();
 
         $timePoints = [
             'baseline' => 'Baseline',
@@ -169,8 +163,11 @@ class DashboardController extends Controller
 
         $visitProgress = [];
 
+        $today = today()->toDateString();
+
         foreach ($timePoints as $key => $label) {
-            $visits = $this->visits()->where('time_point', $key);
+            $visits = $this->visits()
+                ->where('time_point', $key);
 
             $completed = (clone $visits)
                 ->whereNotNull('visited_at')
@@ -178,12 +175,17 @@ class DashboardController extends Controller
 
             $visitProgress[] = [
                 'label' => $label,
+
                 'records' => (clone $visits)->count(),
+
                 'completed' => $completed,
+
                 'overdue' => (clone $visits)
                     ->whereNull('visited_at')
-                    ->whereDate('due_date', '<', today()->toDateString())
+                    ->whereNotNull('due_date')
+                    ->whereDate('due_date', '<', $today)
                     ->count(),
+
                 'percentage' => $patientCount > 0
                     ? round(($completed / $patientCount) * 100, 1)
                     : 0,
@@ -203,10 +205,10 @@ class DashboardController extends Controller
 
         $seriousEventCount = null;
 
-       if (Schema::hasColumns('adverse_events', [
-    'visit_id',
-    'is_serious',
-])) {
+        if (Schema::hasColumns('adverse_events', [
+            'visit_id',
+            'is_serious',
+        ])) {
             $seriousEventCount = DB::table('adverse_events')
                 ->whereIn(
                     'visit_id',
@@ -232,6 +234,12 @@ class DashboardController extends Controller
         return response()->streamDownload(function (): void {
             $output = fopen('php://output', 'w');
 
+            if ($output === false) {
+                throw new \RuntimeException(
+                    'Unable to open the CSV output stream.'
+                );
+            }
+
             fputcsv($output, [
                 'study_code',
                 'time_point',
@@ -244,9 +252,14 @@ class DashboardController extends Controller
                 ->lazyById(500, 'visit_id');
 
             foreach ($visits as $visit) {
-                $code = $visit->patient->study_code;
+                if (! $visit->patient) {
+                    continue;
+                }
 
-                if (preg_match('/^\s*[=+\-@]/u', $code)) {
+                $code = (string) $visit->patient->study_code;
+
+                // Prevent spreadsheet formulas in exported study codes.
+                if (preg_match('/^[\s\x{FEFF}]*[=+\-@]/u', $code)) {
                     $code = "'" . $code;
                 }
 

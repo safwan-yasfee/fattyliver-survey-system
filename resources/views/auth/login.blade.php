@@ -1,84 +1,61 @@
+@extends('layouts.auth')
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login | Fatty Liver System</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
-            background: #f0f5f8;
-            font-family: Arial, sans-serif;
-        }
-        .login-box {
-            width: 100%;
-            max-width: 420px;
-            background: white;
-            padding: 35px;
-            border-radius: 12px;
-            box-shadow: 0 8px 30px #00000012;
-        }
-        h2 { color: #175b70; margin-bottom: 8px; }
-        p { color: #64748b; margin-bottom: 25px; }
-        label { display: block; margin: 15px 0 7px; }
-        input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 7px;
-        }
-        button {
-            width: 100%;
-            background: #176b83;
-            color: white;
-            border: 0;
-            padding: 13px;
-            margin-top: 22px;
-            border-radius: 7px;
-            cursor: pointer;
-        }
-        .error { color: #b91c1c; }
-    </style>
-</head>
-<body>
-<div class="login-box">
-    <h2>Fatty Liver System</h2>
-    <p>Secure Patient Management Portal</p>
+@section('title', 'Sign In')
 
-    @if ($errors->any())
-        <div class="error">
-            {{ $errors->first() }}
-        </div>
-    @endif
+@section('content')
+    <h1>Welcome back</h1>
 
-
-    @if (session('success'))
-    <div class="alert alert-success" role="status">
-        {{ session('success') }}
-    </div>
-@endif
+    <p class="intro">
+        Sign in to access your clinical and research workspace.
+    </p>
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <label>Email</label>
-        <input type="email" name="email"
-               value="{{ old('email') }}" required>
+        <div class="mb-3">
+            <label for="email" class="form-label">
+                Email Address
+            </label>
 
-        <label>Password</label>
-        <input type="password" name="password" required>
+            <input id="email"
+                   name="email"
+                   type="email"
+                   class="form-control"
+                   value="{{ old('email') }}"
+                   placeholder="you@example.com"
+                   maxlength="255"
+                   autocomplete="username"
+                   required>
+        </div>
 
-        <button type="submit">Login</button>
+        <div class="mb-3">
+            <label for="password" class="form-label">
+                Password
+            </label>
+
+            <input id="password"
+                   name="password"
+                   type="password"
+                   class="form-control"
+                   placeholder="Enter your password"
+                   autocomplete="current-password"
+                   required>
+        </div>
+
+        <div class="text-end mb-4">
+            <a href="{{ route('password.request') }}"
+               class="auth-link small-copy"
+               data-auth-slide>
+                Forgot password?
+            </a>
+        </div>
+
+        <button type="submit" class="btn btn-auth mt-2">
+            Sign In
+        </button>
     </form>
-    <p class="text-center mt-3">
-    Need an account?
-    <a href="{{ route('register') }}">Create Account</a>
-</p>
-</div>
-</body>
-</html>
+
+    <p class="small-copy text-center mt-4 mb-0">
+        Need an account? Contact the system administrator.
+    </p>
+@endsection
